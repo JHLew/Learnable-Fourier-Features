@@ -1,6 +1,6 @@
 # Learnable-Fourier-Features
 
-Unofficial implementation of the paper "Learnable Fourier Features for Multi-Dimensional Spatial Positional Encoding", NeurIPS 2021.
+Unofficial pytorch implementation of the paper "Learnable Fourier Features for Multi-Dimensional Spatial Positional Encoding", NeurIPS 2021.
 https://arxiv.org/pdf/2106.02795.pdf
 
 Basic usage is as below:
