@@ -36,17 +36,15 @@ class LearnableFourierFeatures(nn.Module):
 class FourierFeatures(nn.Module):
     def __init__(self, pos_dim, f_dim, sigma=10, train=False):
         super(FourierFeatures, self).__init__()
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         assert f_dim % 2 == 0, 'number of channels must be divisible by 2.'
         enc_dim = int(f_dim / 2)
         self.B = torch.randn([pos_dim, enc_dim]) * sigma
         if train:
             self.B = nn.Parameter(self.B)
-        self.B = self.B.to(device)
 
     def forward(self, pos):
         # pos: (B L C), (B H W C), (B H W T C)
-        pos_enc = torch.matmul(pos, self.B)
+        pos_enc = torch.matmul(pos, self.B.to(pos.device))
         pos_enc = torch.cat([torch.sin(pos_enc), torch.cos(pos_enc)], dim=-1)
         return pos_enc
 
@@ -56,18 +54,17 @@ class PositionalEncoding(nn.Module):
     def __init__(self, pos_dim, enc_dim):
         super(PositionalEncoding, self).__init__()
         assert enc_dim % (pos_dim * 2) == 0, 'dimension of positional encoding must be equal to dim * 2.'
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         enc_dim = int(enc_dim / 2)
         div_term = torch.exp(torch.arange(0., enc_dim, 2) * -(np.log(10000.0) / enc_dim))
         freqs = torch.zeros([pos_dim, enc_dim])
         for i in range(pos_dim):
             freqs[i, : enc_dim // 2] = div_term
             freqs[i, enc_dim // 2:] = div_term
-        self.freqs = freqs.to(device)
+        self.freqs = freqs
 
     def forward(self, pos):
         # pos: (B L C), (B H W C), (B H W T C)
-        pos_enc = torch.matmul(pos, self.freqs)
+        pos_enc = torch.matmul(pos, self.freqs.to(pos.device))
         pos_enc = torch.cat([torch.sin(pos_enc), torch.cos(pos_enc)], dim=-1)
         return pos_enc
 
