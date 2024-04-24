@@ -5,7 +5,7 @@ https://arxiv.org/pdf/2106.02795.pdf
 
 Basic usage is as below:
 ```python
-from positional_encoding import LearnableFourierFeaturesas LFF
+from positional_encoding import LearnableFourierFeatures as LFF
 
 lff = LFF(pos_dim=2, f_dim=128, h_dim=256, d_dim=64) # learnable fourier features module
 pos = torch.randn([4, 1024, 1, 2])  # random positional coordinates
